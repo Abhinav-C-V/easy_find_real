@@ -2,13 +2,16 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
 from datetime import datetime
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Listing(models.Model):
     class SaleType(models.TextChoices):
         FOR_SALE = 'for_sale'
         FOR_RENT = 'for_rent'
 
-    realtor = models.EmailField(max_length=254)
+    realtor = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     address = models.CharField(max_length=200)

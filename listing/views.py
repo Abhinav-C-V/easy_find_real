@@ -6,7 +6,20 @@ from django.views.decorators.cache import never_cache
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
+def about(request):
+    return render(request, 'about.html')
 
+def contact(request):
+    return render(request, 'contact.html')
+ 
+def property_list(request):
+    return render(request, 'property-list.html')
+    
+def property_agents(request):
+    return render(request, 'property-agent.html')
+    
+def property_types(request):
+    return render(request, 'property-type.html')
 @never_cache
 def index(request):
     # if 'user_email' in request.session:
@@ -37,3 +50,8 @@ def index(request):
     #             'recommended':recommended,
     #         }
     #     return render(request, 'index.html',context )
+    
+    
+
+    
+    

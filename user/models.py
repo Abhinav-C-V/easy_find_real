@@ -26,7 +26,9 @@ class CustomUserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
+    
 
+    
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=161, unique=True)
     name = models.CharField(max_length=161)
@@ -37,7 +39,25 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name', ]
+    REQUIRED_FIELDS = ['name']
 
     def __str__(self):
         return self.email
+    
+    
+# class Tenant(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+#     document_proofs = models.TextField(blank=True)
+
+#     def __str__(self):
+#         return self.user.name
+    
+# class Tenant(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, null=True, blank=True)
+#     document_proofs = models.TextField(blank=True)
+#     agreement_end_date = models.DateField(null=True, blank=True)
+#     monthly_rent_date = models.IntegerField(null=True, blank=True)
+
+#     def __str__(self):
+#         return self.user.name

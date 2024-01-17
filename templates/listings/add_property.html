@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="display-5 animated fadeIn mb-4">Add Property</h1> 
+
+                <div class="wow fadeInUp " data-wow-delay="0.5s">
+                    {% comment %} <p class="mb-4">The contact form is currently inactive. Get a functional and working contact form with Ajax & PHP in a few minutes. Just copy and paste the files, add a little code and you're done. <a href="https://htmlcodex.com/contact-form">Download Now</a>.</p> {% endcomment %}
+                    <form action="{% url 'user:add_property' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="Property Title">
+                                    <label for="title">Title</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="address" name="address" placeholder="Property Address">
+                                    <label for="adrress">Address</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="city" id="city" placeholder="City">
+                                    <label for="city">City</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="state" id="state" placeholder="State">
+                                    <label for="state">State</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="Zip Code">
+                                    <label for="zipcode">Zip Code</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="description" id="description" placeholder="Description">
+                                    <label for="description">Description</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" name="price" id="price" placeholder="Price">
+                                    <label for="price">Price</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" name="bedrooms" id="bedrooms" placeholder="Bedrooms">
+                                    <label for="bedrooms">Bedrooms</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" step="0.1" class="form-control" name="bathrooms" id="bathrooms" placeholder="Bathrooms">
+                                    <label for="bathrooms">Bathrooms</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number"  class="form-control" name="property_area" id="property_area" placeholder="Property Area">
+                                    <label for="property_area">Property Area</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="sale_type" id="sale_type">
+                                        <option value="for_sale">For Sale</option>
+                                        <option value="for_rent">For Rent</option>
+                                    </select>
+                                    <label for="sale_type">Sale Type</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" name="proprty_type" id="property_type">
+                                        <option value="home">Home</option>
+                                        <option value="Villa">Villa</option>
+                                        <option value="apartment">Apartment</option>
+                                        <option value="Office">Office</option>
+                                        <option value="building">Building</option>
+                                        <option value="shop">Shop</option>
+
+                                    </select>
+                                    <label for="property_type">Property Type</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="file" class="form-control" name="photo_main" id="photo_main">
+                                    <label for="photo_main">Main Photo</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="file" class="form-control" name="photo_1" id="photo_1">
+                                    <label for="photo_1">Photo 1</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="file" class="form-control" name="photo_2" id="photo_2">
+                                    <label for="photo_2">Photo 2</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="file" class="form-control" name="photo_3" id="photo_3">
+                                    <label for="photo_3">Photo 3</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_published" id="is_published">
+                                    <label class="form-check-label" for="is_published">Is Published</label>
+                                </div>
+                            </div>
+                            {% comment %} <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_realtor" id="is_realtor">
+                                    <label class="form-check-label" for="is_realtor">
+                                        Are you a realtor?
+                                    </label>
+                                </div>
+                            </div> {% endcomment %}
+                            <div class="col-12 ">
+                                <button class="btn btn-primary w-100 py-3" type="submit">Submit</button>
+                            </div>
+                            {% comment %} <p class="mb-4">Already registered ?<a href="{% url 'user:login' %}">Login Now</a>.</p> {% endcomment %}
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

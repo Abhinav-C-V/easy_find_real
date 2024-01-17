@@ -4,6 +4,7 @@ from django.http import FileResponse, HttpResponse ,Http404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.core.files.storage import FileSystemStorage
+from django.urls import reverse
 
 # Create your views here.
 def about(request):
@@ -13,13 +14,21 @@ def contact(request):
     return render(request, 'contact.html')
  
 def property_list(request):
-    return render(request, 'property-list.html')
+    if request.user.is_authenticated:
+        return render(request, 'property-list.html')
+    return redirect(reverse('user:login'))
     
 def property_agents(request):
-    return render(request, 'property-agent.html')
+    if request.user.is_authenticated:
+        return render(request, 'property-agent.html')
+    return redirect(reverse('user:login'))
+    
     
 def property_types(request):
-    return render(request, 'property-type.html')
+    if request.user.is_authenticated:
+        return render(request, 'property-type.html')
+    return redirect(reverse('user:login'))
+
 @never_cache
 def index(request):
     # if 'user_email' in request.session:

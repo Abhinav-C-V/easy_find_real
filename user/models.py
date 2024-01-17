@@ -12,15 +12,15 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_realter(self, email, name, password=None):
-        user = self.crete_user(email, name, password)
+    def create_realtor(self, email, name, password=None):
+        user = self.create_user(email, name, password)
         user.is_realtor = True
         user.save(using=self._db)
         return user
         
 
     def create_superuser(self, email, name, password=None):
-        user = self.crete_user(email, name, password)
+        user = self.create_user(email, name, password)
         
         user.is_staff =  True
         user.is_superuser = True

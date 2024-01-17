@@ -4,8 +4,21 @@ from django.utils import timezone
 from datetime import datetime
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
+class Banner(models.Model):
+    name   = models.CharField(default='House',max_length=100)
+    image = models.ImageField(upload_to='banner_imgs/')
+    
+    def __str__(self):
+        return self.name
+    
+class PropertyTyepe(models.Model):
+    property_type   = models.CharField(default='House',max_length=100)
+    image = models.ImageField(upload_to='property_type_imgs/')
+    
+    def __str__(self):
+        return self.property_type
 
+User = get_user_model()
 class Listing(models.Model):
     class SaleType(models.TextChoices):
         FOR_SALE = 'for_sale'
@@ -25,10 +38,10 @@ class Listing(models.Model):
     property_area   = models.IntegerField(default=0)
     property_type   = models.CharField(default='House',max_length=100)
     sale_type       = models.CharField(max_length=10, choices=SaleType.choices, default=SaleType.FOR_SALE)
-    photo_main      = models.ImageField(upload_to='listing_imgs/%Y/%m/%d')
-    photo_1         = models.ImageField(upload_to='listing_imgs/%Y/%m/%d', blank=True)
-    photo_2         = models.ImageField(upload_to='listing_imgs/%Y/%m/%d', blank=True)
-    photo_3         = models.ImageField(upload_to='listing_imgs/%Y/%m/%d', blank=True)
+    photo_main      = models.ImageField(upload_to='listing_imgs/')
+    photo_1         = models.ImageField(upload_to='listing_imgs/', blank=True)
+    photo_2         = models.ImageField(upload_to='listing_imgs/', blank=True)
+    photo_3         = models.ImageField(upload_to='listing_imgs/', blank=True)
     is_published    = models.BooleanField(default=True)
     listing_date    = models.DateTimeField(default=timezone.now, blank=True)
 

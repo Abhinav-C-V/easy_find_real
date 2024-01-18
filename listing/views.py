@@ -4,13 +4,16 @@ from django.http import FileResponse, HttpResponse ,Http404
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from . models import Listing
+import random
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @never_cache
 def index(request):
-    return render(request, 'index.html')
+    properties = Listing.objects.all()
+    random_property = random.choice(properties) if properties else None
+    return render(request, 'index.html', {'random_property': random_property})
 
 @never_cache
 def about(request):
@@ -24,7 +27,10 @@ def contact(request):
     return render(request, 'contact.html')
 
 @never_cache
-@login_required
+def testimonial(request):
+    return render(request, 'testimonial.html')
+
+@never_cache
 def property_list(request):
     if request.user.is_authenticated:
         properties = Listing.objects.all().order_by('-listing_date')
@@ -50,7 +56,6 @@ def property_list(request):
     return redirect(reverse('user:login'))
 
 @never_cache
-@login_required
 def property_agents(request):
     if request.user.is_authenticated:
         return render(request, 'properties/property-agent.html')
@@ -58,7 +63,6 @@ def property_agents(request):
     
 
 @never_cache
-@login_required  
 def property_types(request):
     if request.user.is_authenticated:
         return render(request, 'properties/property-type.html')

@@ -12,5 +12,7 @@ urlpatterns = [
     path('property_agents/', views.property_agents, name='property_agents'),
     path('property_types/', views.property_types, name='property_types'),
     path('property_details/', views.property_details, name='property_details'),
+    path('testimonial/', views.testimonial, name='testimonial'),
+    
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

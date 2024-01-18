@@ -14,7 +14,6 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-@method_decorator(login_required, name='dispatch')
 class UserSignupView(View):
     @method_decorator(never_cache)
     def get(self, request):
@@ -55,17 +54,16 @@ class UserSignupView(View):
             return redirect('user:register')
             
 
-@method_decorator(login_required, name='dispatch')
 class UserLoginView(View):
     @method_decorator(never_cache)
     def get(self, request):
-        if request.user.is_authenticated and user.is_active:
+        if request.user.is_authenticated:
             return redirect('index')
         return render(request, 'accounts/login.html')
 
     @method_decorator(never_cache)
     def post(self, request):
-        if request.user.is_authenticated and user.is_active:
+        if request.user.is_authenticated:
             return redirect('index')
         
         email = request.POST['email']
@@ -90,7 +88,6 @@ def user_logout(request):
     return redirect('user:login')
 
 
-@method_decorator(login_required, name='dispatch')
 class AddPropertyView(View):
     @method_decorator(never_cache)
     def get(self, request):

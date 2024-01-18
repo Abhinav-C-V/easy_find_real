@@ -6,6 +6,7 @@ from listing.models import Listing
 from .models import CustomUser
 # from django.utils.text import slugify
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import update_session_auth_hash
 # from listing.forms import AddPropertyForm
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -351,5 +352,40 @@ class EditPersonalInfoView(View):
             user.save()
 
             messages.success(request, 'Your profile has been updated successfully')
+            return redirect('user:user_dashboard')
+        return redirect('user:login')
+    
+    
+@method_decorator(login_required, name='dispatch')
+class ChangePasswordView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, 'accounts/change_password.html')
+        return redirect('user:user_dashboard')
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            old_password = request.POST['password']
+            new_password1 = request.POST['password_1']
+            new_password2 = request.POST['password_2']
+
+            # Validate old password
+            if not check_password(old_password, request.user.password):
+                messages.error(request, 'Incorrect old password. Please enter the correct password.')
+                return redirect('user:change_password')
+
+            # Validate new password
+            if new_password1 != new_password2:
+                messages.error(request, 'New passwords do not match. Please enter the same password in both fields.')
+                return redirect('user:change_password')
+
+            # Update user's password
+            request.user.set_password(new_password1)
+            request.user.save()
+
+            # Important: update the session with the new password hash
+            update_session_auth_hash(request, request.user)
+
+            messages.success(request, 'Your password has been changed successfully')
             return redirect('user:user_dashboard')
         return redirect('user:login')

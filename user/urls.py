@@ -2,7 +2,7 @@ from django.urls import path,include
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import UserLoginView, UserSignupView, AddPropertyView, EditPropertyView, EditPersonalInfoView
+from .views import UserLoginView, UserSignupView, AddPropertyView, EditPropertyView, EditPersonalInfoView, ChangePasswordView
 
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('delete_property/', views.delete_property, name='delete_property'),
     path('edit_property/', EditPropertyView.as_view(), name='edit_property'),
     path('edit_personalinfo/', EditPersonalInfoView.as_view(), name='edit_personalinfo'),
+    path('change_password/', ChangePasswordView.as_view(), name='change_password'),
     
     
     

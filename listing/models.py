@@ -12,7 +12,7 @@ class Banner(models.Model):
     def __str__(self):
         return self.name
     
-class PropertyTyepe(models.Model):
+class PropertyType(models.Model):
     property_type   = models.CharField(default='House',max_length=100)
     image = models.ImageField(upload_to='property_type_imgs/')
     

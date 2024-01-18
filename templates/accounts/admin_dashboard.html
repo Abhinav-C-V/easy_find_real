@@ -7,7 +7,7 @@
         <div class="container-fluid header bg-white p-0">
             <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
                 <div class="col-md-6 p-5 mt-lg-5">
-                    <h1 class="display-5 animated fadeIn mb-4">Dashboard</h1> 
+                    <h1 class="display-5 animated fadeIn mb-4">Admin Dashboard</h1> 
                         <nav aria-label="breadcrumb animated fadeIn">
                         <ol class="breadcrumb text-uppercase">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -17,16 +17,9 @@
                     </nav>
                     <div class="personal-info-container">
                         <h4 class="animated fadeIn mb-4 d-inline">Personal Info</h4>
-                        <div class="messages-container">
-                            {% if messages %}
-                              <div class="messages">
-                                {% for message in messages %}
-                                  <div class="alert alert-warning">{{ message }}</div>
-                                {% endfor %}
-                              </div>
-                            {% endif %}
-                        </div>
-                        <a class="btn btn-primary btn-sm py-1 px-2 ms-2" href="{% url 'user:edit_personalinfo' %}"><i class="fa fa-edit-alt me-2"></i>Edit</a>
+                        <a class="btn btn-primary btn-sm py-1 px-2 ms-2" href="{% url 'user:edit_personalinfo' %}"><i class="fa fa-pencil-alt me-2"></i>Edit</a>
+                        <a class="btn btn-primary btn-sm py-1 px-2 ms-2" href="{% url 'user:change_password' %}">Change Password</a>
+
                     </div>
                     <nav aria-label="breadcrumb animated fadeIn">
                         <ol class="breadcrumb ">
@@ -43,6 +36,13 @@
             </div>
         </div>
         <!-- Header End -->
+            {% if messages %}
+              <div class="messages">
+                {% for message in messages %}
+                  <div class="alert alert-warning">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
 
          <!-- Admin Dashboard Content Start -->
         <div class="container-xxl py-5">
@@ -50,23 +50,91 @@
                 <!-- Admin Dashboard Table Section -->
                 <div class="row g-4">
                     <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
-                        <h1 class="mb-3">Admin Dashboard</h1>
+                        <h2 class="mb-3">User Details</h2>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Action</th>
+
                                     <!-- Add more columns as needed -->
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if admin_data %}
-                                    {% for admin_item in admin_data %}
+                                {% if users %}
+                                    {% for user in users %}
                                         <tr>
-                                            <td>{{ admin_item.id }}</td>
-                                            <td>{{ admin_item.name }}</td>
-                                            <td>{{ admin_item.email }}</td>
+                                            <td>{{ user.id }}</td>
+                                            <td>{{ user.name }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td><div class="dropdown">
+                                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="menu-icon fa fa-glass"></i>Actions</a>
+                                                <div class="dropdown-menu rounded-0 m-0">
+                                                    {% if user.is_active %}
+                                                        <a class="dropdown-item" href="{% url 'user:admin_blockuser' %}?u_id={{user.id}}"><i class="menu-icon fa fa-danger"></i>Block</a>
+                                                    {% else %}
+                                                        <a class="dropdown-item" href="{% url 'user:admin_blockuser' %}?u_id={{user.id}}"><i class="menu-icon fa fa-danger"></i>Un Block</a>
+                                                    {% endif %}
+                                                    <a class="dropdown-item" href="{% url 'user:admin_deleteuser' %}?u_id={{user.id}}"><i class="menu-icon fa fa-danger"></i>Delete</a>
+                                                </div>
+                                            </div></td>
+                                            <!-- Add more columns as needed -->
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No data available.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- End Admin Dashboard Table Section -->
+            </div>
+        </div>
+        <!-- Admin Dashboard Content End -->
+
+         <!-- Admin Dashboard Content Start -->
+         <div class="container-xxl py-5">
+            <div class="container">
+                <!-- Admin Dashboard Table Section -->
+                <div class="row g-4">
+                    <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+                        <h2 class="mb-3">Property Details</h2>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Slug</th>
+                                    <th>Property Type</th>
+                                    <th>Listing Date</th>
+                                    <th>Action</th>
+
+                                    <!-- Add more columns as needed -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if properties %}
+                                    {% for property in properties %}
+                                        <tr>
+                                            <td>{{ property.id }}</td>
+                                            <td>{{ property.slug }}</td>
+                                            <td>{{ property.property_type }}</td>
+                                            <td>{{ property.listing_date }}</td>
+                                            <td><div class="dropdown">
+                                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="menu-icon fa fa-glass"></i>Actions</a>
+                                                <div class="dropdown-menu rounded-0 m-0">
+                                                    {% if property.is_published %}
+                                                        <a class="dropdown-item" href="{% url 'user:admin_deactivate_property' %}?p_id={{property.id}}"><i class="menu-icon fa fa-danger"></i>Deactivate</a>
+                                                    {% else %}
+                                                        <a class="dropdown-item" href="{% url 'user:admin_deactivate_property' %}?p_id={{property.id}}"><i class="menu-icon fa fa-danger"></i>Activate</a>
+                                                    {% endif %}
+                                                    <a class="dropdown-item" href="{% url 'user:admin_delete_property' %}?p_id={{property.id}}"><i class="menu-icon fa fa-danger"></i>Delete</a>
+                                                </div>
+                                            </div></td>
                                             <!-- Add more columns as needed -->
                                         </tr>
                                     {% endfor %}
@@ -85,71 +153,6 @@
         <!-- Admin Dashboard Content End -->
 
 
-        <!-- Property List Start -->
-        <div class="container-xxl py-5">
-            <div class="container">
-                <div class="row g-0 gx-5 align-items-end">
-                    <div class="col-lg-6">
-                        <div class="text-start mx-auto mb-5 wow slideInLeft" data-wow-delay="0.1s">
-                            <h1 class="mb-3">My Properties</h1>
-                            <p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore lorem kasd vero ipsum sit eirmod sit diam justo sed rebum.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 text-start text-lg-end wow slideInRight" data-wow-delay="0.1s">
-                        <ul class="nav nav-pills d-inline-flex justify-content-end mb-5">
-                            <li class="nav-item me-2">
-                                <a class="btn btn-outline-primary active" data-bs-toggle="pill" href="#tab-1">Featured</a>
-                            </li>
-                            <li class="nav-item me-2">
-                                <a class="btn btn-outline-primary" data-bs-toggle="pill" href="#tab-2">For Sell</a>
-                            </li>
-                            <li class="nav-item me-0">
-                                <a class="btn btn-outline-primary" data-bs-toggle="pill" href="#tab-3">For Rent</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tab-content">
-                    <div id="tab-1" class="tab-pane fade show p-0 active">
-                        <div class="row g-4">
-                            {% if my_properties %}
-                            {% for property in my_properties %}
-
-                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                                <div class="property-item rounded overflow-hidden">
-                                    <div class="position-relative overflow-hidden">
-                                        <a href="{% url 'user:realtor_property_details' %}?p_id={{ property.id }}"><img class="img-fluid" src="{{ property.photo_main.url }}" alt="{{ property.title }}"></a>
-                                        <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">{{ property.sale_type }}</div>
-                                        <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">{{ property.property_type }}</div>
-                                    </div>
-                                    <div class="p-4 pb-0">
-                                        <h5 class="text-primary mb-3">₹ {{ property.price }}</h5>
-                                        <a class="d-block h5 mb-2" href="{% url 'user:realtor_property_details' %}?p_id={{ property.id }}">{{property.title}}</a>
-                                        <p><i class="fa fa-map-marker-alt text-primary me-2"></i>{{property.address}}, {{property.city}}, {{property.state}}, India</p>
-                                    </div>
-                                    <div class="d-flex border-top">
-                                        <small class="flex-fill text-center border-end py-2"><i class="fa fa-ruler-combined text-primary me-2"></i>{{property.property_area}} Sqft</small>
-                                        <small class="flex-fill text-center border-end py-2"><i class="fa fa-bed text-primary me-2"></i>{{property.bedrooms}} Bed</small>
-                                        <small class="flex-fill text-center py-2"><i class="fa fa-bath text-primary me-2"></i>{{property.bathrooms}} Bath</small>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                            {% else %}
-                            <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
-                                <h1 class="mb-3">No Property Registered Yet.</h1>
-                                {% comment %} <p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore lorem kasd vero ipsum sit eirmod sit diam justo sed rebum.</p> {% endcomment %}
-                            </div>
-                            {% endif %}
-                            
-                            {% comment %} <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
-                                <a class="btn btn-primary py-3 px-5" href="">Browse More Property</a>
-                            </div> {% endcomment %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Property List End -->
+        
 
         {% endblock %}

@@ -1,13 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages,auth
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from listing.models import Listing
+from listing.models import Listing, Banner, PropertyType
 from .models import CustomUser
-# from django.utils.text import slugify
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
-# from listing.forms import AddPropertyForm
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -16,26 +14,25 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@method_decorator(login_required, name='dispatch')
 class UserSignupView(View):
     @method_decorator(never_cache)
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('home')
+            return redirect('index')
         # form = UserSignupForm()
         return render(request, 'accounts/register.html')
     
     @method_decorator(never_cache)
     def post(self, request):
         if request.user.is_authenticated:
-            return redirect('home')
+            return redirect('index')
         name = request.POST['name']
         email = request.POST['email']
         password_1 = request.POST['password_1']
         password_2 = request.POST['password_2']
         
-        # Check if passwords match
         if password_1 == password_2:
-            # Check if user already exists
             if CustomUser.objects.filter(email=email).exists():
                 messages.error(request, 'Already registered with the email address')
                 return redirect('user:register')
@@ -57,34 +54,32 @@ class UserSignupView(View):
         else:
             return redirect('user:register')
             
-            # return render(request, 'accounts/register.html')
-        
+
+@method_decorator(login_required, name='dispatch')
 class UserLoginView(View):
     @method_decorator(never_cache)
     def get(self, request):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and user.is_active:
             return redirect('index')
-        # form = UserLoginForm()
         return render(request, 'accounts/login.html')
 
     @method_decorator(never_cache)
     def post(self, request):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and user.is_active:
             return redirect('index')
         
         email = request.POST['email']
         password = request.POST['password']
         
-        # Authenticate user
         user = authenticate(request, username=email, password=password)
         
-        if user is not None:
+        if user is not None and user.is_active:
             login(request, user)
             messages.success(request, 'You are now logged in')
             return redirect('index')
-        else:
-            messages.error(request, 'Invalid login credentials')
-            return redirect('user:login')
+        
+        messages.error(request, 'Invalid login credentials')
+        return redirect('user:login')
             
 @never_cache
 @login_required
@@ -92,9 +87,10 @@ def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
         messages.success(request, 'You have been logged out successfully.')
-    return redirect('index')
+    return redirect('user:login')
 
 
+@method_decorator(login_required, name='dispatch')
 class AddPropertyView(View):
     @method_decorator(never_cache)
     def get(self, request):
@@ -125,7 +121,6 @@ class AddPropertyView(View):
                 photo_1 = request.FILES.get('photo_1', None)
                 photo_2 = request.FILES.get('photo_2', None)
                 photo_3 = request.FILES.get('photo_3', None)
-                # is_published = request.POST.get('is_published')
                 is_published = request.POST.get('is_published') == 'on'
                 # print(is_published)
                 # print(property_type)
@@ -181,6 +176,7 @@ class AddPropertyView(View):
         return redirect('user:login')
     
 
+@method_decorator(login_required, name='dispatch')
 class EditPropertyView(View):
     @method_decorator(never_cache)
     def get(self, request):
@@ -191,9 +187,8 @@ class EditPropertyView(View):
                 'listing': listing
                 }
             return render(request, 'listings/edit_property.html', context)
-        else:
-            messages.warning(request, 'You do not have permission to edit this property.')
-            return redirect('index')
+        messages.warning(request, 'You do not have permission to edit this property.')
+        return redirect('user:login')
         
     @method_decorator(never_cache)
     def post(self, request):
@@ -260,11 +255,11 @@ class EditPropertyView(View):
 
             messages.success(request, 'Property updated successfully')
             return redirect('user:user_dashboard')
-        else:
-            messages.warning(request, 'You do not have permission to edit this property.')
-            return redirect('index')
+        
+        messages.warning(request, 'You do not have permission to edit this property.')
+        return redirect('user:login')
       
-      
+
 @never_cache
 @login_required
 def delete_property(request):
@@ -274,7 +269,7 @@ def delete_property(request):
         messages.success(request, 'Property deleted successfully')
         return redirect('index')
     messages.warning(request, 'You do not have permission to delete this property.')
-    return redirect('index')
+    return redirect('user:login')
 
     
 @never_cache
@@ -305,25 +300,13 @@ def realtor_property_details(request):
             return render(request, 'properties/realtor_property-details.html',context)
     return redirect('user:login')
 
-# class EditPersonalInfoView(View):
-#     @method_decorator(never_cache)
-#     def get(self, request):
-#         if request.user.is_authenticated:
-#             u_id=request.GET['u_id']
-#             listing = CustomUser.objects.get(id=u_id, realtor=request.user)
-#             context = {
-#                 'listing': listing
-                
-#                 }
-#             return render(request, 'listings/edit_property.html', context)
-#         messages.warning(request, 'You do not have permission to edit this property.')
-#         return redirect('index')
+
 @method_decorator(login_required, name='dispatch')
 class EditPersonalInfoView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return render(request, 'accounts/edit_profile.html', {'user': request.user})
-        return redirect('user:user_dashboard')
+        return redirect('user:login')
 
     def post(self, request):
         if request.user.is_authenticated:
@@ -345,7 +328,6 @@ class EditPersonalInfoView(View):
                 messages.error(request, 'Incorrect password. Please enter the correct password.')
                 return redirect('user:edit_profile')
 
-            # Update user's name and email
             user = request.user
             user.name = name
             user.email = email
@@ -361,7 +343,7 @@ class ChangePasswordView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return render(request, 'accounts/change_password.html')
-        return redirect('user:user_dashboard')
+        return redirect('user:login')
 
     def post(self, request):
         if request.user.is_authenticated:
@@ -369,17 +351,14 @@ class ChangePasswordView(View):
             new_password1 = request.POST['password_1']
             new_password2 = request.POST['password_2']
 
-            # Validate old password
             if not check_password(old_password, request.user.password):
                 messages.error(request, 'Incorrect old password. Please enter the correct password.')
                 return redirect('user:change_password')
 
-            # Validate new password
             if new_password1 != new_password2:
                 messages.error(request, 'New passwords do not match. Please enter the same password in both fields.')
                 return redirect('user:change_password')
 
-            # Update user's password
             request.user.set_password(new_password1)
             request.user.save()
 
@@ -389,3 +368,80 @@ class ChangePasswordView(View):
             messages.success(request, 'Your password has been changed successfully')
             return redirect('user:user_dashboard')
         return redirect('user:login')
+    
+    
+@never_cache
+@login_required
+def admin_dashboard(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        properties = Listing.objects.all().order_by('-listing_date')
+        banners = Banner.objects.all().order_by('-id')
+        property_types = PropertyType.objects.all().order_by('-id')
+        users = CustomUser.objects.all().order_by('-id')
+        context = {
+            'property_types':property_types,
+            'banners':banners,
+            'users':users,
+            'properties':properties
+        }
+        # print(my_properties)
+        return render(request, 'accounts/admin_dashboard.html',context)
+    return redirect('user:login')
+
+@never_cache
+@login_required
+def admin_deleteuser(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        u_id=request.GET['u_id']
+        CustomUser.objects.filter(id=u_id).delete()
+        messages.warning(request, f'{user.name} is no longer a member')
+        return redirect('user:admin_dashboard')
+    return redirect('user:login')
+
+@never_cache
+@login_required
+def admin_blockuser(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        u_id=request.GET['u_id']
+        block_check=CustomUser.objects.filter(id=u_id)
+        for user in block_check:
+            # print(user.is_active)
+            if user.is_active:
+                CustomUser.objects.filter(id=u_id).update(is_active=False)
+                messages.warning(request, f'{user.name} is blocked')
+            else:
+                CustomUser.objects.filter(id=u_id).update(is_active=True)
+                messages.success(request, f'{user.name} is unblocked')
+            # print(user.is_active)
+        return redirect('user:admin_dashboard')
+    return redirect('user:login')
+    
+
+@never_cache
+@login_required
+def admin_delete_property(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        p_id=request.GET['p_id']
+        Listing.objects.filter(id=p_id).delete()
+        messages.warning(request, 'property deleted successfully')
+        return redirect('user:admin_dashboard')
+    return redirect('user:login')
+
+@never_cache
+@login_required
+def admin_deactivate_property(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        p_id=request.GET['p_id']
+        active_check=Listing.objects.filter(id=p_id)
+        for pperty in active_check:
+            # print(user.is_active)
+            if pperty.is_published:
+                Listing.objects.filter(id=p_id).update(is_published=False)
+                messages.warning(request, 'property successfully deactivated')
+            else:
+                Listing.objects.filter(id=p_id).update(is_published=True)
+                messages.success(request, f'property successfully activated')
+            # print(user.is_active)
+        return redirect('user:admin_dashboard')
+
+    return redirect('user:login')

@@ -30,6 +30,13 @@
                         </ol>
                     </nav>
                 </div>
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 <div class="col-md-6 animated fadeIn">
                     <img class="img-fluid" src="{% static 'img/header.jpg' %}" alt="">
                 </div>

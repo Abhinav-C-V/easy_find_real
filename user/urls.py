@@ -17,6 +17,12 @@ urlpatterns = [
     path('edit_property/', EditPropertyView.as_view(), name='edit_property'),
     path('edit_personalinfo/', EditPersonalInfoView.as_view(), name='edit_personalinfo'),
     path('change_password/', ChangePasswordView.as_view(), name='change_password'),
+    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin_blockuser/', views.admin_blockuser, name='admin_blockuser'),
+    path('admin_deleteuser/', views.admin_deleteuser, name='admin_deleteuser'),
+    path('admin_deactivate_property/', views.admin_deactivate_property, name='admin_deactivate_property'),
+    path('admin_delete_property/', views.admin_delete_property, name='admin_delete_property'),
+    
     
     
     

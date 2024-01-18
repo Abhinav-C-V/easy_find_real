@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from listing.models import Listing
 from .models import CustomUser
-from django.utils.text import slugify
+# from django.utils.text import slugify
+from django.contrib.auth.hashers import check_password
 # from listing.forms import AddPropertyForm
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -143,12 +144,6 @@ class AddPropertyView(View):
                     print("Invalid numeric input for price")
                     messages.error(request, 'Invalid numeric input for price, bedrooms, or bathrooms.')
                     return redirect('user:add_property')
-                
-                # if not photo_main:
-                #     messages.error(request, 'Main photo is required.')
-                #     return redirect('user:add_property')
-                # print(photo_main)
-                # print(request.FILES)
                 
                 if not photo_main or not photo_main.name.endswith(('.png', '.jpg', '.jpeg')):
                     messages.error(request, 'A valid main photo is required (PNG or JPG).')
@@ -309,4 +304,52 @@ def realtor_property_details(request):
             return render(request, 'properties/realtor_property-details.html',context)
     return redirect('user:login')
 
+# class EditPersonalInfoView(View):
+#     @method_decorator(never_cache)
+#     def get(self, request):
+#         if request.user.is_authenticated:
+#             u_id=request.GET['u_id']
+#             listing = CustomUser.objects.get(id=u_id, realtor=request.user)
+#             context = {
+#                 'listing': listing
+                
+#                 }
+#             return render(request, 'listings/edit_property.html', context)
+#         messages.warning(request, 'You do not have permission to edit this property.')
+#         return redirect('index')
+@method_decorator(login_required, name='dispatch')
+class EditPersonalInfoView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return render(request, 'accounts/edit_profile.html', {'user': request.user})
+        return redirect('user:user_dashboard')
 
+    def post(self, request):
+        if request.user.is_authenticated:
+            name = request.POST['name']
+            email = request.POST['email']
+            password = request.POST['password']
+
+            if not name.strip() or not email.strip():
+                messages.error(request, 'Name and Email are required fields.')
+                return redirect('user:edit_profile')
+            
+            # Check if the provided email already exists
+            if CustomUser.objects.exclude(pk=request.user.pk).filter(email=email).exists():
+                messages.error(request, 'Email already exists. Please choose a different email.')
+                return redirect('user:edit_profile')
+            
+            # Verify the provided password
+            if not check_password(password, request.user.password):
+                messages.error(request, 'Incorrect password. Please enter the correct password.')
+                return redirect('user:edit_profile')
+
+            # Update user's name and email
+            user = request.user
+            user.name = name
+            user.email = email
+            user.save()
+
+            messages.success(request, 'Your profile has been updated successfully')
+            return redirect('user:user_dashboard')
+        return redirect('user:login')

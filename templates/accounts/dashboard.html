@@ -15,6 +15,18 @@
                             <li class="breadcrumb-item text-body active" aria-current="page">Dashboard</li>
                         </ol>
                     </nav>
+                    <div class="personal-info-container">
+                        <h4 class="animated fadeIn mb-4 d-inline">Personal Info</h4>
+                        <a class="btn btn-primary btn-sm py-1 px-2 ms-2" href="{% url 'user:edit_personalinfo' %}"><i class="fa fa-edit-alt me-2"></i>Edit</a>
+                    </div>
+                    <nav aria-label="breadcrumb animated fadeIn">
+                        <ol class="breadcrumb ">
+                            <li class="breadcrumb-item"><a href="#">Name : {{request.user.name}}</a></li>
+                        </ol>
+                        <ol class="breadcrumb ">
+                            <li class="breadcrumb-item"><a href="#">Email : {{request.user.email}}</a></li>
+                        </ol>
+                    </nav>
                 </div>
                 <div class="col-md-6 animated fadeIn">
                     <img class="img-fluid" src="{% static 'img/header.jpg' %}" alt="">

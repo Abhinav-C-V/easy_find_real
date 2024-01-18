@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
+from . models import Listing
 
 # Create your views here.
 def about(request):
@@ -15,7 +16,40 @@ def contact(request):
  
 def property_list(request):
     if request.user.is_authenticated:
-        return render(request, 'property-list.html')
+        properties = Listing.objects.all().order_by('-listing_date')
+
+        # Get the search parameters from the request
+        search_keyword = request.GET.get('search_keyword', '')
+        property_type = request.GET.get('property_type', '')
+        location = request.GET.get('location', '')
+        print(search_keyword)
+        print(property_type)
+        print(location)
+        
+        # Filter the properties based on the search parameters
+        # if search_keyword:
+        #     filtered_properties = properties.filter(title__icontains=search_keyword)
+        #     if filtered_properties.exists():
+        #         properties = filtered_properties
+        # if property_type:
+        #     filtered_properties = properties.filter(property_type__icontains=property_type)
+        #     if filtered_properties.exists():
+        #         properties = filtered_properties
+        # if location:
+        #     filtered_properties = properties.filter(state__icontains=location)
+        #     if filtered_properties.exists():
+        #         properties = filtered_properties
+        if search_keyword:
+            properties = properties.filter(title__icontains=search_keyword)
+        if property_type:
+            properties = properties.filter(property_type__icontains=property_type)
+        if location:
+            properties = properties.filter(state__icontains=location)
+
+        context = {
+            'properties': properties,
+        }
+        return render(request, 'properties/property-list.html', context)
     return redirect(reverse('user:login'))
     
 def property_agents(request):
@@ -28,6 +62,23 @@ def property_types(request):
     if request.user.is_authenticated:
         return render(request, 'property-type.html')
     return redirect(reverse('user:login'))
+
+def property_details(request):
+    if request.user.is_authenticated:
+        # if request.user.is_realtor:
+        p_id = request.GET['p_id']
+                
+        single_property = Listing.objects.get(id=p_id)
+        if single_property.realtor == request.user:
+            my_property = True
+        my_property = False
+        context = {
+            'single_property':single_property,
+            'my_property':my_property
+        }
+        print(single_property)
+        return render(request, 'properties/property-details.html',context)
+    return redirect('user:login')
 
 @never_cache
 def index(request):

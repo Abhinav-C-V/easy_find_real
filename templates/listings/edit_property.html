@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h1 class="display-5 animated fadeIn mb-4">Add Property</h1> 
+                <h1 class="display-5 animated fadeIn mb-4">Edit Property</h1>
                 <div class="messages-container">
                     {% if messages %}
                       <div class="messages">
@@ -20,72 +20,72 @@
 
                 <div class="wow fadeInUp " data-wow-delay="0.5s">
                     {% comment %} <p class="mb-4">The contact form is currently inactive. Get a functional and working contact form with Ajax & PHP in a few minutes. Just copy and paste the files, add a little code and you're done. <a href="https://htmlcodex.com/contact-form">Download Now</a>.</p> {% endcomment %}
-                    <form action="{% url 'user:add_property' %}" method="POST" enctype="multipart/form-data">
+                    <form action="{% url 'user:edit_property' %}?p_id={{listing.id}}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="title" name="title" placeholder="Property Title">
+                                    <input type="text" class="form-control" id="title" name="title"  value="{{ listing.title }}">
                                     <label for="title">Title</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="address" name="address" placeholder="Property Address">
+                                    <input type="text" class="form-control" id="address" name="address"  value="{{ listing.address }}">
                                     <label for="adrress">Address</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="city" id="city" placeholder="City">
+                                    <input type="text" class="form-control" name="city" id="city"  value="{{ listing.city }}">
                                     <label for="city">City</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="state" id="state" placeholder="State">
+                                    <input type="text" class="form-control" name="state" id="state"  value="{{ listing.state }}">
                                     <label for="state">State</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="Zip Code">
+                                    <input type="text" class="form-control" name="zipcode" id="zipcode"  value="{{ listing.zipcode }}">
                                     <label for="zipcode">Zip Code</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" name="description" id="description" placeholder="Description">
+                                    <input type="text" class="form-control" name="description" id="description"  value="{{ listing.description }}">
                                     <label for="description">Description</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="number" class="form-control" name="price" id="price" placeholder="Price">
+                                    <input type="number" class="form-control" name="price" id="price"  value="{{ listing.price }}">
                                     <label for="price">Price</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="number" class="form-control" name="bedrooms" id="bedrooms" placeholder="Bedrooms">
+                                    <input type="number" class="form-control" name="bedrooms" id="bedrooms"  value="{{ listing.bedrooms }}">
                                     <label for="bedrooms">Bedrooms</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="number" step="0.1" class="form-control" name="bathrooms" id="bathrooms" placeholder="Bathrooms">
+                                    <input type="number" step="0.1" class="form-control" name="bathrooms" id="bathrooms"  value="{{ listing.bathrooms }}">
                                     <label for="bathrooms">Bathrooms</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="number"  class="form-control" name="property_area" id="property_area" placeholder="Property Area">
+                                    <input type="number"  class="form-control" name="property_area" id="property_area"  value="{{ listing.property_area }}">
                                     <label for="property_area">Property Area</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <select class="form-select" name="sale_type" id="sale_type">
+                                    <select class="form-select" name="sale_type" id="sale_type" >
                                         <option value="for_sale">For Sale</option>
                                         <option value="for_rent">For Rent</option>
                                     </select>
@@ -108,42 +108,35 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="file" class="form-control" name="photo_main" id="photo_main">
+                                    <input type="file" class="form-control" name="photo_main" id="photo_main" value="{{ listing.photo_main }}">
                                     <label for="photo_main">Main Photo</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="file" class="form-control" name="photo_1" id="photo_1">
+                                    <input type="file" class="form-control" name="photo_1" id="photo_1" value="{{ listing.photo_1 }}">
                                     <label for="photo_1">Photo 1</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="file" class="form-control" name="photo_2" id="photo_2">
+                                    <input type="file" class="form-control" name="photo_2" id="photo_2" value="{{ listing.photo_2 }}">
                                     <label for="photo_2">Photo 2</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="file" class="form-control" name="photo_3" id="photo_3">
+                                    <input type="file" class="form-control" name="photo_3" id="photo_3" value="{{ listing.photo_3 }}">
                                     <label for="photo_3">Photo 3</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_published" id="is_published">
+                                    <input class="form-check-input" type="checkbox" name="is_published" id="is_published" value="{{ listing.is_publishe }}">
                                     <label class="form-check-label" for="is_published">Is Published</label>
                                 </div>
                             </div>
-                            {% comment %} <div class="col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_realtor" id="is_realtor">
-                                    <label class="form-check-label" for="is_realtor">
-                                        Are you a realtor?
-                                    </label>
-                                </div>
-                            </div> {% endcomment %}
+                            
                             <div class="col-12 ">
                                 <button class="btn btn-primary w-100 py-3" type="submit">Submit</button>
                             </div>

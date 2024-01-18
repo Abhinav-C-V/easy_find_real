@@ -7,12 +7,12 @@
         <div class="container-fluid header bg-white p-0">
             <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
                 <div class="col-md-6 p-5 mt-lg-5">
-                    <h1 class="display-5 animated fadeIn mb-4">Dashboard</h1> 
+                    <h1 class="display-5 animated fadeIn mb-4">Property List</h1> 
                         <nav aria-label="breadcrumb animated fadeIn">
                         <ol class="breadcrumb text-uppercase">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                            <li class="breadcrumb-item text-body active" aria-current="page">Dashboard</li>
+                            <li class="breadcrumb-item text-body active" aria-current="page">Property List</li>
                         </ol>
                     </nav>
                 </div>
@@ -23,13 +23,19 @@
         </div>
         <!-- Header End -->
 
+
+        <!-- Search Start -->
+        {% include 'includes/search.html' %}
+        <!-- Search End -->
+
+
         <!-- Property List Start -->
         <div class="container-xxl py-5">
             <div class="container">
                 <div class="row g-0 gx-5 align-items-end">
                     <div class="col-lg-6">
                         <div class="text-start mx-auto mb-5 wow slideInLeft" data-wow-delay="0.1s">
-                            <h1 class="mb-3">My Properties</h1>
+                            <h1 class="mb-3">Property Listing</h1>
                             <p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore lorem kasd vero ipsum sit eirmod sit diam justo sed rebum.</p>
                         </div>
                     </div>
@@ -50,19 +56,18 @@
                 <div class="tab-content">
                     <div id="tab-1" class="tab-pane fade show p-0 active">
                         <div class="row g-4">
-                            {% if my_properties %}
-                            {% for property in my_properties %}
-
+                            {% if properties %}
+                            {% for property in properties %}
                             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                                 <div class="property-item rounded overflow-hidden">
                                     <div class="position-relative overflow-hidden">
-                                        <a href="{% url 'user:realtor_property_details' %}?p_id={{ property.id }}"><img class="img-fluid" src="{{ property.photo_main.url }}" alt="{{ property.title }}"></a>
-                                        <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">{{ property.sale_type }}</div>
-                                        <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">{{ property.property_type }}</div>
+                                        <a href="{% url 'property_details' %}?p_id={{ property.id }}"><img class="img-fluid" src="{{property.photo_main.url}}" alt=""></a>
+                                        <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">{{property.sale_type}}</div>
+                                        <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">{{property.property_type}}</div>
                                     </div>
                                     <div class="p-4 pb-0">
-                                        <h5 class="text-primary mb-3">₹ {{ property.price }}</h5>
-                                        <a class="d-block h5 mb-2" href="{% url 'user:realtor_property_details' %}?p_id={{ property.id }}">{{property.title}}</a>
+                                        <h5 class="text-primary mb-3">$ {{property.price}}</h5>
+                                        <a class="d-block h5 mb-2" href="{% url 'property_details' %}?p_id={{ property.id }}">{{property.title}}</a>
                                         <p><i class="fa fa-map-marker-alt text-primary me-2"></i>{{property.address}}, {{property.city}}, {{property.state}}, India</p>
                                     </div>
                                     <div class="d-flex border-top">
@@ -73,16 +78,11 @@
                                 </div>
                             </div>
                             {% endfor %}
-                            {% else %}
-                            <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
-                                <h1 class="mb-3">No Property Registered Yet.</h1>
-                                {% comment %} <p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore lorem kasd vero ipsum sit eirmod sit diam justo sed rebum.</p> {% endcomment %}
-                            </div>
                             {% endif %}
                             
-                            {% comment %} <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
                                 <a class="btn btn-primary py-3 px-5" href="">Browse More Property</a>
-                            </div> {% endcomment %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,29 +90,4 @@
         </div>
         <!-- Property List End -->
 
-        {% if not request.user.is_realtor %}
-        <!-- Call to Action Start -->
-        <div class="container-xxl py-5">
-            <div class="container">
-                <div class="bg-light rounded p-3">
-                    <div class="bg-white rounded p-4" style="border: 1px dashed rgba(0, 185, 142, .3)">
-                        <div class="row g-5 align-items-center">
-                            <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
-                                <img class="img-fluid rounded w-100" src="{% static 'img/call-to-action.jpg' %}" alt="">
-                            </div>
-                            <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
-                                <div class="mb-4">
-                                    <h1 class="mb-3">Contact With Our Certified Agent</h1>
-                                    <p>Eirmod sed ipsum dolor sit rebum magna erat. Tempor lorem kasd vero ipsum sit sit diam justo sed vero dolor duo.</p>
-                                </div>
-                                <a href="" class="btn btn-primary py-3 px-4 me-2"><i class="fa fa-phone-alt me-2"></i>Make A Call</a>
-                                <a href="" class="btn btn-dark py-3 px-4"><i class="fa fa-calendar-alt me-2"></i>Get Appoinment</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-        <!-- Call to Action End -->
         {% endblock %}
